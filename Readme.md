@@ -62,6 +62,8 @@ GasProcurementSystem/
 {"code":"00000","message":null,"data":[{"leng":21728,"cost":5442300,"gxmc":null,"sygr":90,"gxlx":"省级管网","flow":90,"spjg":0.2783},{"leng":28419,"cost":7909200,"gxmc":"豫北支线","sygr":5000,"gxlx":"省级管网","flow":100,"spjg":0.2783}]}
 ```
 
+​	对应代码
+
 ```java
 pathJson.put("gxmc", trimString(line.getLineName()));
 pathJson.put("gxlx", trimString(line.getGasLineType()));

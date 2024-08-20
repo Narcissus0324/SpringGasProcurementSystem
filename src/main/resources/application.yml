@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:dm://192.168.56.1:5236
+    username: SYSDBA
+    password: SYSDBA
+    driver-class-name: dm.jdbc.driver.DmDriver
+    hikari:
+      keepalive-time: 60000
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true

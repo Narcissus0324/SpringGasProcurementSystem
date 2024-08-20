@@ -15,7 +15,6 @@ GasProcurementSystem/
 │   │   │               │   └── GasProcurementController.java
 │   │   │               ├── service/
 │   │   │               │   └── GasProcurementService.java
-│   │   │               ├── repository/
 │   │   │               ├── model/
 │   │   │               │   ├── Node.java
 │   │   │               │   ├── Line.java

@@ -27,6 +27,7 @@ GasProcurementSystem/
 │   │   │               ├── algorithm/
 │   │   │               │   └── PathFinder.java
 │   │   │               └── utils/
+│   │   │               │   ├── RequestDTO.java
 │   │   │                   └── ResultDTO.java
 │   │   └── resources/
 │   │       ├── application.yml

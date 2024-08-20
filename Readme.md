@@ -30,9 +30,9 @@ GasProcurementSystem/
 │   │   │                   ├── RequestDTO.java
 │   │   │                   └── ResultDTO.java
 │   │   └── resources/
-│   │       ├── application.yml
+│   │       └── application.yml
 │   └── test/
-│       ├── java/
+│       └──  java/
 │           └── com/
 │               └── mapInterfaceService/
 │                   └── GasProcurementSystem/

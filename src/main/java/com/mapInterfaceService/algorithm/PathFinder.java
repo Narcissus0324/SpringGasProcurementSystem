@@ -9,6 +9,10 @@ import com.mapInterfaceService.model.Node;
 import com.mapInterfaceService.model.Line;
 import com.mapInterfaceService.model.PathResult;
 
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -21,7 +25,13 @@ public class PathFinder {
 
     static {
         try {
-            Loader.loadNativeLibraries();
+//            Loader.loadNativeLibraries();
+
+            InputStream inputStream = PathFinder.class.getResourceAsStream("/or-tools/jniortools.dll");
+            File tempDll = File.createTempFile("jniortools", ".dll");
+            tempDll.deleteOnExit();
+            Files.copy(inputStream, tempDll.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            System.load(tempDll.getAbsolutePath());
         } catch (Exception e) {
             Logger.getLogger(PathFinder.class.getName()).severe("加载 ORTools 本地库失败: " + e.getMessage());
             throw new ExceptionInInitializerError(e);

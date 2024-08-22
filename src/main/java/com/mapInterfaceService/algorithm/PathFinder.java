@@ -20,7 +20,12 @@ public class PathFinder {
     private final Set<Integer> specifiedSupplyNodes;  // 指定的供给点
 
     static {
-        Loader.loadNativeLibraries();
+        try {
+            Loader.loadNativeLibraries();
+        } catch (Exception e) {
+            Logger.getLogger(PathFinder.class.getName()).severe("加载 ORTools 本地库失败: " + e.getMessage());
+            throw new ExceptionInInitializerError(e);
+        }
     }
 
     // 指定供给点
@@ -35,8 +40,8 @@ public class PathFinder {
     // 求解最大流
     private List<PathResult> findMaxFlowSolution() {
         MaxFlow maxFlow = new MaxFlow();
-        Map<Integer, Integer> nodeSupplyMap = new HashMap<>(); // 用于记录节点的供应量
-        List<String> arcInfoList = new ArrayList<>(); // 用于记录弧线信息 (起点，终点，容量)
+        Map<Integer, Integer> nodeSupplyMap = new HashMap<>(); // 记录节点的供应量
+        List<String> arcInfoList = new ArrayList<>(); // 记录弧线信息 (起点，终点，容量)
 
         // 找到现有节点ID的最大值
         int maxNodeId = model.getNodes().stream()
@@ -97,8 +102,8 @@ public class PathFinder {
         nodeSupplyMap.forEach((nodeId, supply) -> logger.info("节点ID: " + nodeId + "，节点容量: " + supply)); // 输出节点的信息
         for (String arcInfo : arcInfoList) {
             logger.info(arcInfo);
-        } // 输出弧线的信息
-        */
+        }
+*/
 
         MaxFlow.Status status = maxFlow.solve(superSourceId, superSinkId); // 求解最大流
 
@@ -174,7 +179,7 @@ public class PathFinder {
                 .forEach(node -> {
                     int currentExtraNodeId = extraNodeId[0]++;  // 使用当前的 extraNodeId，并递增
                     int gasSupply = (node.getGasSupply() == 0) ? 1000 : (int) node.getGasSupply();
-                    double gasPrice = 10000 * ((node.getGasPrice() == 0.0) ? 2.5 : node.getGasPrice()); // 单位：元/万立方米
+                    double gasPrice = 10000 * ((node.getGasPrice() == 0.0) ? 2.5 : node.getGasPrice()); // 单位：元/万m³
                     minCostFlow.addArcWithCapacityAndUnitCost(currentExtraNodeId, node.getNodeId(), gasSupply, (int) gasPrice);
                     minCostFlow.setNodeSupply(currentExtraNodeId, gasSupply);
                     nodeSupplyMap.put(currentExtraNodeId, gasSupply);

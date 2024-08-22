@@ -3,7 +3,11 @@ package com.mapInterfaceService.output;
 import com.mapInterfaceService.model.Line;
 import com.mapInterfaceService.model.Model;
 import com.mapInterfaceService.model.PathResult;
+import com.mapInterfaceService.utils.GeometryUtils;
 import com.mapInterfaceService.utils.ResultDTO;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +16,10 @@ import java.util.Map;
 
 public class ResultPrinter {
 
+    private static final Logger logger = LoggerFactory.getLogger(ResultPrinter.class);
     private final Model model;
+
+
 
     public ResultPrinter(Model model) {
         this.model = model;
@@ -25,7 +32,7 @@ public class ResultPrinter {
      */
     public ResultDTO<List<Map<String, Object>>> printResults(List<PathResult> pathResults) {
         if (pathResults == null || pathResults.isEmpty()) {
-            return ResultDTO.fail("ResultDTO.fail", "No path results found.");
+            return ResultDTO.fail("B0001", "No path results found.");
         }
 
         List<Map<String, Object>> dataArray = new ArrayList<>();
@@ -35,8 +42,9 @@ public class ResultPrinter {
                 dataArray.add(pathJson);
             }
         }
+        ResultDTO<List<Map<String, Object>>> resultDTO = ResultDTO.success(dataArray);
 
-        return ResultDTO.success(dataArray);
+        return resultDTO;
     }
 
     /**
@@ -52,13 +60,20 @@ public class ResultPrinter {
             line = model.findLineByStartEnd(result.getEndNodeId(), result.getStartNodeId());
         }
         if (line != null) {
-            pathJson.put("gxmc", trimString(line.getLineName()));
-            pathJson.put("gxlx", trimString(line.getGasLineType()));
-            pathJson.put("leng", (int)line.getLength());
-            pathJson.put("sygr", result.getCapacity());
-            pathJson.put("flow", result.getFlow());
-            pathJson.put("spjg", line.getUnitPrice());
-            pathJson.put("cost", result.getCost());
+            String coordinatePairs = GeometryUtils.convertGeometryToCoordinatePairs(line.getGeometry());
+//            String wkt = GeometryUtils.convertGeometryToWKT(line.getGeometry());
+
+            pathJson.put("path_id", 1);
+            pathJson.put("gxbm", trimString(line.getLineCode())); // 管线编码
+            pathJson.put("geom", coordinatePairs); // 几何信息
+            pathJson.put("gxmc", trimString(line.getLineName())); // 管线名称
+            pathJson.put("gxlx", trimString(line.getGasLineType())); // 管线类型
+            pathJson.put("leng", line.getLength() * 0.001); // 管线长度（KM）
+            pathJson.put("sygr", result.getCapacity()); // 剩余管容（管线的天然气运输上限）（万m³）
+            pathJson.put("flow", result.getFlow()); // 流量（本次计算中，流过这条管线的天然气数量）（万m³）
+            pathJson.put("spjg", line.getUnitPrice()); // 运输成本（元/万m³）
+            pathJson.put("cost", result.getCost()); // 运输费用（本次计算中，流过该管线需要的费用）（元）
+            pathJson.put("optimalCost", result.getOptimalCost()); // 总成本（购买 + 运输）
         }
 
         return pathJson;

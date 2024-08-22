@@ -44,13 +44,19 @@ public class GasProcurementController {
             Set<Integer> supplyNodes = supplyNodesList != null ? new HashSet<>(supplyNodesList) : null;
 
             ResultDTO<List<Map<String, Object>>> response = service.calculatePath(date, demandNodes, supplyNodes, logger);
+            String responseJson = objectMapper.writeValueAsString(response);
+
+            logger.info("Returning response: " + responseJson);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (JsonProcessingException e) {
             logger.severe("Error processing JSON request: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResultDTO.fail("B0001", "JSON processing error: " + e.getMessage()));
-        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResultDTO.fail("B0002", "JSON processing error: " + e.getMessage()));
+        } catch (RuntimeException e) {
             logger.severe("Error occurred during routing calculation: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResultDTO.fail("B0001", "error: " + e.getMessage()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResultDTO.fail("B0003", "Service error: " + e.getMessage()));
+        } catch (Exception e) {
+            logger.severe("Unexpected error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResultDTO.fail("B0004", "Unexpected error: " + e.getMessage()));
         }
     }
 }

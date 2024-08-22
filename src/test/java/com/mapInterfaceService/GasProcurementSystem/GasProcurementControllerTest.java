@@ -31,15 +31,15 @@ public class GasProcurementControllerTest {
     public void testCalculatePath() throws Exception {
         // 创建请求DTO
         RequestDTO requestDTO = new RequestDTO();
-        requestDTO.setDate("2024-05-01");
+        requestDTO.setDate("2024-03-01");
 
         Map<String, Integer> demandNodes = new HashMap<>();
-        demandNodes.put("61", 100);
-        demandNodes.put("50", 90);
+        demandNodes.put("50", 50);
+        demandNodes.put("61", 50);
         requestDTO.setDemandNodes(demandNodes);
 
-        List<Integer> supplyNodes = List.of(1, 20);
-        requestDTO.setSupplyNodes(supplyNodes);
+//        List<Integer> supplyNodes = List.of(545, 1123);
+//        requestDTO.setSupplyNodes(supplyNodes);
 
         // 将DTO转换为JSON字符串
         String requestJson = objectMapper.writeValueAsString(requestDTO);
@@ -51,7 +51,6 @@ public class GasProcurementControllerTest {
                 .andReturn();
 
         String jsonResponse = result.getResponse().getContentAsString();
-        System.out.println("Complete JSON Response: " + jsonResponse);
 
         // 将响应保存到文件中
         File outputFile = new File("response.json");

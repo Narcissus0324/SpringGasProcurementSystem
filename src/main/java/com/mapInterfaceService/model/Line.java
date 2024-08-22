@@ -1,4 +1,6 @@
 package com.mapInterfaceService.model;
+import org.locationtech.jts.geom.Geometry;
+
 
 import java.util.List;
 
@@ -6,7 +8,7 @@ public class Line {
     private int lineId;
     private int startNode;
     private int endNode;
-    private double length;  // 单位：KM
+    private double length;  // 单位：M
     private String lineName;
     private String lineDetailName;
     private double unitPrice;  // 单位：元/千立方米·公里
@@ -19,10 +21,13 @@ public class Line {
     private String commissioningDate;
     private String gasLineType;
     private String gasLineStatus;
+    private String lineCode;
+    private Geometry geometry;
+
     private List<MonthlySurplusCapacity> monthlyCapacities; // 单位：万立方米
 
     public double getUnitCost() {
-        return unitPrice * length * 10; // 单位：元/万立方米
+        return unitPrice * length * 0.01; // 单位：元/万立方米
     }
 
     public int getCapacityForMonth(int month) {
@@ -160,6 +165,22 @@ public class Line {
 
     public void setMonthlyCapacities(List<MonthlySurplusCapacity> monthlyCapacities) {
         this.monthlyCapacities = monthlyCapacities;
+    }
+
+    public String getLineCode() {
+        return lineCode;
+    }
+
+    public void setLineCode(String lineCode) {
+        this.lineCode = lineCode;
+    }
+
+    public Geometry getGeometry() {
+        return geometry;
+    }
+
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
     }
 }
 

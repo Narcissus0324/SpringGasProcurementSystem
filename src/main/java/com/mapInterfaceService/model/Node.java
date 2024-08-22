@@ -44,7 +44,7 @@ public class Node {
 
     public double getGasPrice() {
         return gasSitePrice;
-    }
+    } //单位：元/m³
 
     public void setGasPrice(double gasSitePrice) {
         this.gasSitePrice = gasSitePrice;

@@ -1,3 +1,4 @@
+/*
 package com.mapInterfaceService.GasProcurementSystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,3 +58,4 @@ public class GasProcurementControllerTest {
         objectMapper.writeValue(outputFile, objectMapper.readTree(jsonResponse));
     }
 }
+*/

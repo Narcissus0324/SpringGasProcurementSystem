@@ -1,11 +1,10 @@
 spring:
   datasource:
-    url: jdbc:dm://192.168.56.1:5236
+    url: jdbc:dm://192.168.110.17:5236
     username: SYSDBA
     password: SYSDBA
     driver-class-name: dm.jdbc.driver.DmDriver
-    hikari:
-      keepalive-time: 60000
+
 
 server:
   servlet:
@@ -13,3 +12,10 @@ server:
       charset: UTF-8
       enabled: true
       force: true
+
+or-tools:
+  lib-paths:
+    - "/or-tools/libortools.so.9"
+    - "/or-tools/libjniortools.so"
+#    - "/or-tools/jniortools.dll"
+

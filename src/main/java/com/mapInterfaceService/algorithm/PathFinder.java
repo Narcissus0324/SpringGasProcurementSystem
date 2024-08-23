@@ -8,10 +8,14 @@ import com.mapInterfaceService.model.Model;
 import com.mapInterfaceService.model.Node;
 import com.mapInterfaceService.model.Line;
 import com.mapInterfaceService.model.PathResult;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.logging.Logger;
@@ -20,31 +24,40 @@ public class PathFinder {
     private final Logger logger;
     private final Model model;
     private final int month;
-    private final Map<Integer, Integer> demandNodes;  // 需求节点和需求量
-    private final Set<Integer> specifiedSupplyNodes;  // 指定的供给点
+    private final Map<Integer, Integer> demandNodes;
+    private final Set<Integer> specifiedSupplyNodes;
+    private final List<String> libPaths;
 
-    static {
-        try {
-//            Loader.loadNativeLibraries();
-
-            InputStream inputStream = PathFinder.class.getResourceAsStream("/or-tools/jniortools.dll");
-            File tempDll = File.createTempFile("jniortools", ".dll");
-            tempDll.deleteOnExit();
-            Files.copy(inputStream, tempDll.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            System.load(tempDll.getAbsolutePath());
-        } catch (Exception e) {
-            Logger.getLogger(PathFinder.class.getName()).severe("加载 ORTools 本地库失败: " + e.getMessage());
-            throw new ExceptionInInitializerError(e);
-        }
-    }
-
-    // 指定供给点
-    public PathFinder(Model model, int month, Map<Integer, Integer> demandNodes, Set<Integer> specifiedSupplyNodes, Logger logger) {
+    public PathFinder(Model model, int month, Map<Integer, Integer> demandNodes, Set<Integer> specifiedSupplyNodes, Logger logger, List<String> libPaths) {
         this.model = model;
         this.month = month;
         this.demandNodes = demandNodes;
         this.specifiedSupplyNodes = specifiedSupplyNodes;
         this.logger = logger;
+        this.libPaths = libPaths;
+        loadLibraries();
+    }
+
+    private void loadLibraries() {
+        try {
+            for (String libPath : libPaths) {
+                loadLibrary(libPath);
+            }
+        } catch (Exception e) {
+            Logger.getLogger(PathFinder.class.getName()).severe("加载 ORTools 本地库失败: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void loadLibrary(String libPath) throws Exception {
+        String fileName = Paths.get(libPath).getFileName().toString();
+
+        InputStream inputStream = PathFinder.class.getResourceAsStream(libPath);
+        File tempDll = File.createTempFile(fileName, null);
+        tempDll.deleteOnExit();
+        assert inputStream != null;
+        Files.copy(inputStream, tempDll.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        System.load(tempDll.getAbsolutePath());
     }
 
     // 求解最大流
